@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import Header from "../components/header";
 import {
   FiSearch,
   FiShoppingCart,
@@ -148,61 +150,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">SI</span>
-                </div>
-                <span className="text-xl font-bold text-gray-900">
-                  Sama International
-                </span>
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex space-x-8">
-              <a
-                href="#"
-                className="text-gray-900 hover:text-blue-600 font-medium"
-              >
-                Home
-              </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
-                Shop
-              </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
-                Categories
-              </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
-                About
-              </a>
-              <a href="#" className="text-gray-600 hover:text-blue-600">
-                Contact
-              </a>
-            </nav>
-
-            {/* Right side icons */}
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <FiSearch size={20} />
-              </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors relative">
-                <FiShoppingCart size={20} />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  2
-                </span>
-              </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <FiUser size={20} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16">
