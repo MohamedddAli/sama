@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 // Import routes
 import productRouter from "./routes/product.js";
+import categoryRouter from "./routes/category.js";
 
 const app = express();
 
@@ -12,5 +13,6 @@ app.use(express.json());
 
 // Routes
 app.use("/product", productRouter);
+app.use("/category", categoryRouter);
 
 export default app;

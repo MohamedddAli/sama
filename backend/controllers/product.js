@@ -1,5 +1,7 @@
 // controllers/product/productController.js
 import Product from "../models/product.js";
+import Category from "../models/category.js";
+import mongoose from "mongoose";
 
 // CREATE a new product
 export const createProduct = async (req, res) => {
@@ -65,5 +67,24 @@ export const deleteProduct = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed to delete product", error: err.message });
+  }
+};
+
+// GET products by category ID
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId;
+
+    if (!categoryId) {
+      return res.status(400).json({ message: "Category ID is required" });
+    }
+    const products = await Product.find({ category: categoryId });
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch products by category",
+      error: err.message,
+    });
   }
 };

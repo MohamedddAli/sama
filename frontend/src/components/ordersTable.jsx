@@ -23,10 +23,10 @@ const ordersTable = () => {
     <table className="w-full border-collapse">
       <thead>
         <tr>
-          <th className="border p-2">Order ID</th>
-          <th className="border p-2">User</th>
-          <th className="border p-2">Total</th>
-          <th className="border p-2">Status</th>
+          <th className="border p-2 text-black">Order ID</th>
+          <th className="border p-2 text-black">User</th>
+          <th className="border p-2 text-black">Total</th>
+          <th className="border p-2 text-black">Status</th>
         </tr>
       </thead>
       <tbody></tbody>
