@@ -90,6 +90,7 @@ const viewProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      console.log("API Base:", api);
       const response = await axios.get(`${api}/product`);
       setProducts(response.data);
     } catch (error) {

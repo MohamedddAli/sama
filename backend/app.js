@@ -6,15 +6,14 @@ import productRouter from "./routes/product.js";
 import categoryRouter from "./routes/category.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-
-// Load environment variables
 dotenv.config();
 const app = express();
 
-// Set up port and MongoDB URI
+// Load environment variables
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
+// Set up port and MongoDB URI
 mongoose
   .connect(MONGO_URI)
   .then(() => {
