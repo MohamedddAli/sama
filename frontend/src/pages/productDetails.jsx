@@ -9,17 +9,18 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/product/${id}`);
+        const res = await axios.get(`${api}/product/${id}`);
         setProduct(res.data);
 
         // Fetch related products
         const relatedRes = await axios.get(
-          `http://localhost:5000/product/category/${res.data.category}`
+          `${api}/product/category/${res.data.category}`
         );
         setRelated(relatedRes.data.filter((p) => p._id !== id));
       } catch (err) {
@@ -38,7 +39,7 @@ const ProductDetails = () => {
 
   const handleOrder = async () => {
     try {
-      await axios.post("http://localhost:5000/order", {
+      await axios.post(`${api}/order`, {
         productId: product._id,
         quantity: Number(quantity),
       });

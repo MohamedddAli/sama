@@ -6,11 +6,12 @@ import { Link } from "react-router-dom";
 
 const homePage = () => {
   const [categories, setCategories] = useState([]);
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/category");
+        const res = await axios.get(`${api}/category`);
         setCategories(res.data);
       } catch (err) {
         console.error("Failed to load categories", err);

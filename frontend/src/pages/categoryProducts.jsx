@@ -8,12 +8,13 @@ import { Link } from "react-router-dom";
 const categoryProducts = () => {
   const { categoryId } = useParams(); // category ID
   const [products, setProducts] = useState([]);
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchByCategory = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/product/category/${categoryId}` // Adjusted endpoint to match your backend
+          `${api}/product/category/${categoryId}` // Adjusted endpoint to match your backend
         );
         setProducts(res.data);
       } catch (err) {

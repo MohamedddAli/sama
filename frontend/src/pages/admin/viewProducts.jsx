@@ -28,6 +28,7 @@ const viewProducts = () => {
   const [showArchived, setShowArchived] = useState(false);
   const [actionStatus, setActionStatus] = useState(null);
   const [actionMessage, setActionMessage] = useState("");
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch products and categories
   useEffect(() => {
@@ -89,7 +90,7 @@ const viewProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/product");
+      const response = await axios.get(`${api}/product`);
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -102,7 +103,7 @@ const viewProducts = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/category");
+      const response = await axios.get(`${api}/category`);
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -119,7 +120,7 @@ const viewProducts = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/product/${productId}`);
+      await axios.delete(`${api}/product/${productId}`);
       setProducts(products.filter((product) => product._id !== productId));
       setActionStatus("success");
       setActionMessage("Product deleted successfully!");
@@ -140,7 +141,7 @@ const viewProducts = () => {
     const action = currentArchiveStatus ? "unarchive" : "archive";
 
     try {
-      await axios.patch(`http://localhost:5000/product/${productId}`, {
+      await axios.patch(`${api}/product/${productId}`, {
         archived: !currentArchiveStatus,
       });
 
@@ -437,7 +438,7 @@ const viewProducts = () => {
                         {product.name}
                       </h3>
                       <span className="text-xs text-gray-500 ml-2">
-                        #{product.productId}
+                        id: {product.productId}
                       </span>
                     </div>
 

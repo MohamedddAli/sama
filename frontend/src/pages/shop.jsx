@@ -7,11 +7,12 @@ import { Link } from "react-router-dom";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/product");
+        const res = await axios.get(`${api}/product`);
         setProducts(res.data);
       } catch (err) {
         console.error("Failed to fetch products", err);

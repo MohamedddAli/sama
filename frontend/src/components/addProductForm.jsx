@@ -31,12 +31,13 @@ const AddProductForm = () => {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch categories when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/category");
+        const res = await axios.get(`${api}/category`);
         setCategories(res.data);
       } catch (err) {
         console.error("Failed to load categories", err);
@@ -113,7 +114,7 @@ const AddProductForm = () => {
     setSubmitStatus(null);
 
     try {
-      await axios.post("http://localhost:5000/product", product);
+      await axios.post(`${api}/product`, product);
       setSubmitStatus("success");
       setSubmitMessage("Product added successfully!");
 
