@@ -3,6 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { FiUpload, FiTag, FiImage, FiCheck, FiX } from "react-icons/fi";
+const api = import.meta.env.VITE_API_BASE_URL;
 
 const AddCategoryForm = () => {
   const [category, setCategory] = useState({
@@ -66,7 +67,7 @@ const AddCategoryForm = () => {
     setSubmitStatus(null);
 
     try {
-      await axios.post("http://localhost:5000/category", category);
+      await axios.post(`${api}/category`, category);
       setSubmitStatus("success");
       setSubmitMessage("Category added successfully!");
 

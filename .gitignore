@@ -1,0 +1,44 @@
+# === Backend (Node.js / Express) ===
+backend/node_modules/
+backend/.env
+backend/dist/
+backend/build/
+backend/*.log
+
+# === Frontend (Vite / React) ===
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.DS_Store
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === OS / Editor / Tooling ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# === Testing / Coverage ===
+coverage/
+.nyc_output/
+jest-cache/
+jest-test-results.json
+
+# === Build / Cache ===
+*.tsbuildinfo
+*.cache
+.cache/
+.next/
+out/
+turbo/
+.vercel/
