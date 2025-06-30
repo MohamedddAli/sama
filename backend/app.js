@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // only allow your frontend to access the backend
+    origin: "https://sama-int.vercel.app", // only allow your frontend to access the backend
     credentials: true, // if using cookies or auth headers
   })
 );
