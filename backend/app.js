@@ -8,8 +8,13 @@ import categoryRouter from "./routes/category.js";
 const app = express();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL, // only allow your frontend to access the backend
+    credentials: true, // if using cookies or auth headers
+  })
+);
 
 // Routes
 app.use("/product", productRouter);
