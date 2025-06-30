@@ -9,6 +9,7 @@ import LandingPage from "./pages/landingPage";
 import ContactUs from "./pages/contactUs";
 import AddProduct from "./pages/admin/addProduct";
 import AddCategory from "./pages/admin/addCategory";
+import ViewProducts from "./pages/admin/viewProducts";
 const App = () => {
   return (
     <Routes>
@@ -17,6 +18,7 @@ const App = () => {
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/add-product" element={<AddProduct />} />
+      <Route path="/admin/view-products" element={<ViewProducts />} />
       <Route path="/admin/add-category" element={<AddCategory />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/product/:id" element={<ProductDetails />} />

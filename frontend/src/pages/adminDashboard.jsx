@@ -17,6 +17,7 @@ import {
 } from "react-icons/fi";
 import { MdDashboard, MdCategory, MdInventory } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const adminDashboard = () => {
   const [activeSection, setActiveSection] = useState("overview");
@@ -172,20 +173,21 @@ const adminDashboard = () => {
 
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <a
-                href="#"
+              <Link
+                to="dashboard"
                 className="text-gray-900 hover:text-blue-600 font-medium flex items-center gap-2"
               >
                 <MdDashboard size={18} />
                 Dashboard
-              </a>
-              <a
-                href="#"
+              </Link>
+
+              <Link
+                to="/"
                 className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
               >
                 <FiHome size={18} />
                 Store
-              </a>
+              </Link>
             </nav>
 
             {/* Right side icons */}
