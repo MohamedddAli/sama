@@ -7,7 +7,8 @@ import ProductDetails from "./pages/productDetails";
 import CategoryProducts from "./pages/categoryProducts";
 import LandingPage from "./pages/landingPage";
 import ContactUs from "./pages/contactUs";
-
+import AddProduct from "./pages/admin/addProduct";
+import AddCategory from "./pages/admin/addCategory";
 const App = () => {
   return (
     <Routes>
@@ -15,6 +16,8 @@ const App = () => {
       <Route path="/about" element={<h1>About Page</h1>} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/add-product" element={<AddProduct />} />
+      <Route path="/admin/add-category" element={<AddCategory />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/category/:categoryId" element={<CategoryProducts />} />

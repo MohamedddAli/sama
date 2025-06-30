@@ -72,7 +72,7 @@ const contactUs = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Phone
               </h3>
-              <p className="text-gray-600">+1 (555) 123-4567</p>
+              <p className="text-gray-600">+02 01061945540</p>
               <p className="text-gray-600">+1 (555) 987-6543</p>
             </div>
 
