@@ -32,6 +32,15 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    stock: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
