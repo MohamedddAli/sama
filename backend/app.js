@@ -9,12 +9,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://sama-int.vercel.app", // only allow your frontend to access the backend
-    credentials: true, // if using cookies or auth headers
-  })
-);
+app.use(cors());
 
 // Routes
 app.use("/product", productRouter);
