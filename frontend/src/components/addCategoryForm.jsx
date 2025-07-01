@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { FiUpload, FiTag, FiImage, FiCheck, FiX } from "react-icons/fi";
 
-const AddCategoryForm = () => {
+const AddCategoryForm = ({ editingCategory = null, onSuccess, onCancel }) => {
   const [category, setCategory] = useState({
     name: "",
     image: "",
@@ -14,7 +14,18 @@ const AddCategoryForm = () => {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
-  const api = import.meta.env.VITE_API_BASE_URL;
+
+  const api = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editingCategory) {
+      setCategory({
+        name: editingCategory.name || "",
+        image: editingCategory.image || "",
+      });
+    }
+  }, [editingCategory]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -67,22 +78,43 @@ const AddCategoryForm = () => {
     setSubmitStatus(null);
 
     try {
-      await axios.post(`${api}/category`, category);
-      setSubmitStatus("success");
-      setSubmitMessage("Category added successfully!");
+      let response;
+      if (editingCategory) {
+        // Update existing category
+        response = await axios.put(
+          `${api}/category/${editingCategory._id}`,
+          category
+        );
+        setSubmitStatus("success");
+        setSubmitMessage("Category updated successfully!");
+      } else {
+        // Create new category
+        response = await axios.post(`${api}/category`, category);
+        setSubmitStatus("success");
+        setSubmitMessage("Category added successfully!");
+      }
 
-      // Reset form
-      setCategory({
-        name: "",
-        image: "",
-      });
+      // Call success callback if provided
+      if (onSuccess) {
+        onSuccess(response.data, !!editingCategory);
+      }
+
+      // Reset form if not editing
+      if (!editingCategory) {
+        setCategory({
+          name: "",
+          image: "",
+        });
+      }
       setErrors({});
     } catch (err) {
       console.error(err);
       setSubmitStatus("error");
       setSubmitMessage(
         err.response?.data?.message ||
-          "Failed to add category. Please try again."
+          `Failed to ${
+            editingCategory ? "update" : "add"
+          } category. Please try again.`
       );
     } finally {
       setIsSubmitting(false);
@@ -91,6 +123,19 @@ const AddCategoryForm = () => {
         setSubmitStatus(null);
         setSubmitMessage("");
       }, 5000);
+    }
+  };
+
+  const handleCancel = () => {
+    setCategory({
+      name: "",
+      image: "",
+    });
+    setErrors({});
+    setSubmitStatus(null);
+    setSubmitMessage("");
+    if (onCancel) {
+      onCancel();
     }
   };
 
@@ -284,17 +329,11 @@ const AddCategoryForm = () => {
         <div className="flex justify-end gap-4">
           <button
             type="button"
-            onClick={() => {
-              setCategory({
-                name: "",
-                image: "",
-              });
-              setErrors({});
-            }}
+            onClick={handleCancel}
             disabled={isSubmitting}
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Clear Form
+            {onCancel ? "Cancel" : "Clear Form"}
           </button>
           <button
             type="submit"
@@ -304,12 +343,12 @@ const AddCategoryForm = () => {
             {isSubmitting ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Adding Category...
+                {editingCategory ? "Updating..." : "Adding Category..."}
               </>
             ) : (
               <>
                 <FiUpload size={18} />
-                Add Category
+                {editingCategory ? "Update Category" : "Add Category"}
               </>
             )}
           </button>

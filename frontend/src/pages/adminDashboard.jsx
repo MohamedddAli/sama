@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { useState } from "react";
+import axios from "axios";
 import {
   FiSearch,
   FiUser,
@@ -21,13 +23,33 @@ import { Link } from "react-router-dom";
 
 const adminDashboard = () => {
   const [activeSection, setActiveSection] = useState("overview");
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const api = import.meta.env.VITE_API_BASE_URL;
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${api}/product`);
+      setProducts(response.data);
+      console.log("Products fetched successfully:", response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setActionStatus("error");
+      setActionMessage("Failed to load products. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    // Fetch products when the component mounts
+    fetchProducts();
+  }, []);
+
   // Mock data for dashboard stats
   const stats = [
     {
       title: "Total Products",
-      value: "1,234",
-      change: "+12%",
+      value: products.length,
+      change: "N/A",
       changeType: "positive",
       icon: FiPackage,
       color: "bg-blue-100",
@@ -88,12 +110,12 @@ const adminDashboard = () => {
       action: "view-orders",
     },
     {
-      title: "Add Category",
-      description: "Create new product categories",
+      title: "Manage Categories",
+      description: "Manage product categories",
       icon: MdCategory,
       color: "bg-orange-600",
       hoverColor: "hover:bg-orange-700",
-      action: "add-category",
+      action: "manage-categories",
     },
     {
       title: "Manage Users",
@@ -165,7 +187,7 @@ const adminDashboard = () => {
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">S</span>
+                  <span className="text-white font-bold text-sm">SI</span>
                 </div>
                 <span className="text-xl font-bold text-gray-900">Admin</span>
               </div>
@@ -173,14 +195,6 @@ const adminDashboard = () => {
 
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <Link
-                to="dashboard"
-                className="text-gray-900 hover:text-blue-600 font-medium flex items-center gap-2"
-              >
-                <MdDashboard size={18} />
-                Dashboard
-              </Link>
-
               <Link
                 to="/"
                 className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
@@ -192,12 +206,6 @@ const adminDashboard = () => {
 
             {/* Right side icons */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <FiSearch size={20} />
-              </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <FiSettings size={20} />
-              </button>
               <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
                 <FiLogOut size={20} />
               </button>

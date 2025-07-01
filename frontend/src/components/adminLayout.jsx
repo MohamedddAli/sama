@@ -11,6 +11,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { MdDashboard, MdCategory } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const adminLayout = ({ children, currentPage = "dashboard" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -24,7 +25,7 @@ const adminLayout = ({ children, currentPage = "dashboard" }) => {
     },
     {
       name: "Products",
-      href: "/admin/products",
+      href: "/admin/view-products",
       icon: FiPackage,
       current: currentPage === "products",
     },
@@ -35,17 +36,12 @@ const adminLayout = ({ children, currentPage = "dashboard" }) => {
       current: currentPage === "add-product",
     },
     {
-      name: "Categories",
-      href: "/admin/categories",
+      name: "Manage Categories",
+      href: "/admin/manage-categories",
       icon: MdCategory,
-      current: currentPage === "categories",
+      current: currentPage === "maanage-categories",
     },
-    {
-      name: "Add Category",
-      href: "/admin/add-category",
-      icon: MdCategory,
-      current: currentPage === "add-category",
-    },
+
     {
       name: "Orders",
       href: "/admin/orders",
@@ -63,12 +59,6 @@ const adminLayout = ({ children, currentPage = "dashboard" }) => {
       href: "/admin/analytics",
       icon: FiUsers,
       current: currentPage === "analytics",
-    },
-    {
-      name: "Settings",
-      href: "/admin/settings",
-      icon: FiSettings,
-      current: currentPage === "settings",
     },
   ];
 
@@ -174,9 +164,11 @@ const adminLayout = ({ children, currentPage = "dashboard" }) => {
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex flex-1" />
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <button className="p-2 text-gray-400 hover:text-gray-500">
-                <FiHome size={20} />
-              </button>
+              <Link to="/admin" className="hidden lg:block">
+                <button className="p-2 text-gray-400 hover:text-gray-500">
+                  <FiHome size={20} />
+                </button>
+              </Link>
             </div>
           </div>
         </div>

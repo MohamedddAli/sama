@@ -266,9 +266,11 @@ export default function LandingPage() {
                 Bathroom & Kitchen
               </h1>
               <div className="flex items-center gap-4 mb-6">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
-                  Shop Now
-                </button>
+                <Link to="/shop">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
+                    Shop Now
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="relative">
@@ -279,7 +281,7 @@ export default function LandingPage() {
                   className="w-full max-w-md mx-auto rounded-lg"
                 />
                 <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  From 1500 EGP
+                  From 1500 EGP Only!
                 </div>
               </div>
             </div>

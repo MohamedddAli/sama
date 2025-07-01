@@ -13,9 +13,11 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+              <span className="text-white font-bold text-sm">SI</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">Sama</span>
+            <span className="text-xl font-bold text-gray-900">
+              Sama International
+            </span>
           </div>
 
           {/* Navigation */}
@@ -44,14 +46,7 @@ const Header = () => {
             >
               Categories
             </NavLink>
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                `${baseLink} ${isActive ? activeLink : ""}`
-              }
-            >
-              About
-            </NavLink>
+
             <NavLink
               to="/contact-us"
               className={({ isActive }) =>
@@ -64,17 +59,11 @@ const Header = () => {
 
           {/* Right-side icons */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <FiSearch size={20} />
-            </button>
             <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors relative">
               <FiShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 0
               </span>
-            </button>
-            <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <FiUser size={20} />
             </button>
           </div>
         </div>

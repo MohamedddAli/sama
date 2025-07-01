@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import AdminLayout from "../../components/adminLayout";
 import axios from "axios";
 import {
   FiSearch,
@@ -16,8 +17,10 @@ import {
   FiRefreshCw,
   FiChevronLeft,
   FiChevronRight,
-  FiMoreVertical,
+  FiPlus,
+  FiHome,
 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const ViewProducts = () => {
   const [products, setProducts] = useState([]);
@@ -31,10 +34,10 @@ const ViewProducts = () => {
   const [showArchived, setShowArchived] = useState(false);
   const [actionStatus, setActionStatus] = useState(null);
   const [actionMessage, setActionMessage] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState({}); // Track current image for each product
-  const api = import.meta.env.VITE_API_BASE_URL;
 
+  const api = import.meta.env.VITE_API_BASE_URL;
+  const navigate = useNavigate();
   // Fetch products and categories
   useEffect(() => {
     fetchProducts();
@@ -146,7 +149,7 @@ const ViewProducts = () => {
     const action = currentArchiveStatus ? "unarchive" : "archive";
 
     try {
-      await axios.patch(`${api}/${productId}`, {
+      await axios.patch(`${api}/product/${productId}`, {
         archived: !currentArchiveStatus,
       });
 
@@ -188,17 +191,6 @@ const ViewProducts = () => {
     return price.toFixed(2);
   };
 
-  const toggleDropdown = (productId) => {
-    setDropdownOpen((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
-
-  const closeAllDropdowns = () => {
-    setDropdownOpen({});
-  };
-
   const nextImage = (productId, totalImages) => {
     setCurrentImageIndex((prev) => ({
       ...prev,
@@ -213,21 +205,15 @@ const ViewProducts = () => {
     }));
   };
 
-  const goToImage = (productId, index) => {
-    setCurrentImageIndex((prev) => ({
-      ...prev,
-      [productId]: index,
-    }));
+  const handleViewProduct = (productId) => {
+    console.log("View product:", productId);
+    // Add your view product logic here
   };
 
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      closeAllDropdowns();
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+  const handleEditProduct = (productId) => {
+    console.log("Edit product:", productId);
+    // Add your edit product logic here
+  };
 
   if (loading) {
     return (
@@ -241,409 +227,402 @@ const ViewProducts = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Product Management
-              </h1>
-              <p className="text-gray-600">
-                Manage your product inventory and settings
-              </p>
+    <AdminLayout currentPage="view-products">
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Product Management
+                </h1>
+                <p className="text-gray-600">
+                  Manage your product inventory and settings
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={fetchProducts}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <FiRefreshCw size={18} />
+                  Refresh
+                </button>
+                <button
+                  onClick={() => navigate("/admin/add-product")}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <FiPlus size={18} />
+                  Add Product
+                </button>
+              </div>
             </div>
-            <button
-              onClick={fetchProducts}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          </div>
+
+          {/* Status Message */}
+          {actionStatus && (
+            <div
+              className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+                actionStatus === "success"
+                  ? "bg-green-50 border border-green-200 text-green-800"
+                  : "bg-red-50 border border-red-200 text-red-800"
+              }`}
             >
-              <FiRefreshCw size={18} />
-              Refresh
-            </button>
-          </div>
-        </div>
-
-        {/* Status Message */}
-        {actionStatus && (
-          <div
-            className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
-              actionStatus === "success"
-                ? "bg-green-50 border border-green-200 text-green-800"
-                : "bg-red-50 border border-red-200 text-red-800"
-            }`}
-          >
-            {actionStatus === "success" ? (
-              <FiCheck size={20} className="text-green-600" />
-            ) : (
-              <FiX size={20} className="text-red-600" />
-            )}
-            <span className="font-medium">{actionMessage}</span>
-          </div>
-        )}
-
-        {/* Filters and Search */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
-              />
-              <FiSearch
-                className="absolute left-3 top-2.5 text-gray-400"
-                size={18}
-              />
+              {actionStatus === "success" ? (
+                <FiCheck size={20} className="text-green-600" />
+              ) : (
+                <FiX size={20} className="text-red-600" />
+              )}
+              <span className="font-medium">{actionMessage}</span>
             </div>
+          )}
 
-            {/* Category Filter */}
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-            >
-              <option value="">All Categories</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+          {/* Filters and Search */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Search */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
+                />
+                <FiSearch
+                  className="absolute left-3 top-2.5 text-gray-400"
+                  size={18}
+                />
+              </div>
 
-            {/* Sort By */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-            >
-              <option value="name">Sort by Name</option>
-              <option value="price">Sort by Price</option>
-              <option value="stock">Sort by Stock</option>
-              <option value="category">Sort by Category</option>
-            </select>
-
-            {/* Sort Order & Archive Toggle */}
-            <div className="flex gap-2">
+              {/* Category Filter */}
               <select
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               >
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
-              <button
-                onClick={() => setShowArchived(!showArchived)}
-                className={`px-4 py-2 rounded-lg border transition-colors ${
-                  showArchived
-                    ? "bg-orange-100 border-orange-300 text-orange-700"
-                    : "bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200"
-                }`}
+
+              {/* Sort By */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               >
-                {showArchived ? "Archived" : "Active"}
-              </button>
-            </div>
-          </div>
-        </div>
+                <option value="name">Sort by Name</option>
+                <option value="price">Sort by Price</option>
+                <option value="stock">Sort by Stock</option>
+                <option value="category">Sort by Category</option>
+              </select>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <FiPackage size={24} className="text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Products</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {products.filter((p) => !p.archived).length}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <FiCheck size={24} className="text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">In Stock</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {
-                    products.filter((p) => !p.archived && (p.stock || 0) > 0)
-                      .length
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <FiAlertTriangle size={24} className="text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Low Stock</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {
-                    products.filter(
-                      (p) =>
-                        !p.archived &&
-                        (p.stock || 0) > 0 &&
-                        (p.stock || 0) <= 10
-                    ).length
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <FiArchive size={24} className="text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Archived</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {products.filter((p) => p.archived).length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <FiPackage size={48} className="text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No products found
-            </h3>
-            <p className="text-gray-600">
-              {searchTerm || selectedCategory
-                ? "Try adjusting your search or filter criteria"
-                : "Start by adding your first product"}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => {
-              const stockStatus = getStockStatus(product.stock || 0);
-              const finalPrice = calculateFinalPrice(
-                product.price,
-                product.discount || 0
-              );
-
-              return (
-                <div
-                  key={product._id}
-                  className={`bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow ${
-                    product.archived ? "opacity-75" : ""
+              {/* Sort Order & Archive Toggle */}
+              <div className="flex gap-2">
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+                <button
+                  onClick={() => setShowArchived(!showArchived)}
+                  className={`px-4 py-2 rounded-lg border transition-colors ${
+                    showArchived
+                      ? "bg-orange-100 border-orange-300 text-orange-700"
+                      : "bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  {/* Product Image Slideshow */}
-                  <div className="relative h-48 bg-gray-100 group">
-                    {product.images && product.images.length > 0 ? (
-                      <>
-                        {/* Main Image */}
-                        <img
-                          src={
-                            product.images[
-                              currentImageIndex[product._id] || 0
-                            ] || "/placeholder.svg?height=200&width=200"
-                          }
-                          alt={`${product.name} - Image ${
-                            (currentImageIndex[product._id] || 0) + 1
-                          }`}
-                          className="w-full h-full object-cover transition-opacity duration-300"
-                          onError={(e) => {
-                            e.target.src =
-                              "/placeholder.svg?height=200&width=200";
-                          }}
-                        />
+                  {showArchived ? "Archived" : "Active"}
+                </button>
+              </div>
+            </div>
+          </div>
 
-                        {/* Image Counter */}
-                        {product.images.length > 1 && (
-                          <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
-                            {(currentImageIndex[product._id] || 0) + 1} /{" "}
-                            {product.images.length}
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <FiPackage size={24} className="text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Total Products</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {products.filter((p) => !p.archived).length}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <FiCheck size={24} className="text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">In Stock</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {
+                      products.filter((p) => !p.archived && (p.stock || 0) > 0)
+                        .length
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <FiAlertTriangle size={24} className="text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Low Stock</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {
+                      products.filter(
+                        (p) =>
+                          !p.archived &&
+                          (p.stock || 0) > 0 &&
+                          (p.stock || 0) <= 10
+                      ).length
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <FiArchive size={24} className="text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Archived</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {products.filter((p) => p.archived).length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Products Grid */}
+          {filteredProducts.length === 0 ? (
+            <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
+              <FiPackage size={48} className="text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-600">
+                {searchTerm || selectedCategory
+                  ? "Try adjusting your search or filter criteria"
+                  : "Start by adding your first product"}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => {
+                const stockStatus = getStockStatus(product.stock || 0);
+                const finalPrice = calculateFinalPrice(
+                  product.price,
+                  product.discount || 0
+                );
+
+                return (
+                  <div
+                    key={product._id}
+                    className={`bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow ${
+                      product.archived ? "opacity-75" : ""
+                    }`}
+                  >
+                    {/* Product Image Slideshow */}
+                    <div className="relative h-48 bg-gray-100 group">
+                      {product.images && product.images.length > 0 ? (
+                        <>
+                          {/* Main Image */}
+                          <img
+                            src={
+                              product.images[
+                                currentImageIndex[product._id] || 0
+                              ] || "/placeholder.svg?height=200&width=200"
+                            }
+                            alt={`${product.name} - Image ${
+                              (currentImageIndex[product._id] || 0) + 1
+                            }`}
+                            className="w-full h-full object-cover transition-opacity duration-300"
+                            onError={(e) => {
+                              e.target.src =
+                                "/placeholder.svg?height=200&width=200";
+                            }}
+                          />
+
+                          {/* Image Counter */}
+                          {product.images.length > 1 && (
+                            <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                              {(currentImageIndex[product._id] || 0) + 1} /{" "}
+                              {product.images.length}
+                            </div>
+                          )}
+
+                          {/* Navigation Arrows - Only show if more than 1 image */}
+                          {product.images.length > 1 && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  prevImage(product._id, product.images.length)
+                                }
+                                className="absolute left-2 bottom-2 w-8 h-8 bg-white bg-opacity-90 text-gray-800 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md"
+                              >
+                                <FiChevronLeft size={16} />
+                              </button>
+                              <button
+                                onClick={() =>
+                                  nextImage(product._id, product.images.length)
+                                }
+                                className="absolute right-2 bottom-2 w-8 h-8 bg-white bg-opacity-90 text-gray-800 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md"
+                              >
+                                <FiChevronRight size={16} />
+                              </button>
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <img
+                          src="/placeholder.svg?height=200&width=200"
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+
+                      {/* Existing badges - Updated positioning */}
+                      <div className="absolute top-2 right-2 flex flex-col gap-1">
+                        {product.isFeatured && (
+                          <div className="bg-yellow-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <FiStar size={12} />
+                            Featured
                           </div>
                         )}
-
-                        {/* Navigation Arrows - Only show if more than 1 image */}
-                        {product.images.length > 1 && (
-                          <>
-                            <button
-                              onClick={() =>
-                                prevImage(product._id, product.images.length)
-                              }
-                              className="absolute left-2 bottom-2 p-1 text-white-600 opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-300"
-                            >
-                              <FiChevronLeft size={12} />
-                            </button>
-
-                            <button
-                              onClick={() =>
-                                nextImage(product._id, product.images.length)
-                              }
-                              className="absolute right-2 bottom-2 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-300"
-                            >
-                              <FiChevronRight size={12} />
-                            </button>
-                          </>
+                        {product.discount > 0 && (
+                          <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
+                            {product.discount}% OFF
+                          </div>
                         )}
-                      </>
-                    ) : (
-                      <img
-                        src="/placeholder.svg?height=200&width=200"
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-
-                    {/* Existing badges - Updated positioning */}
-                    <div className="absolute top-2 right-2 flex flex-col gap-1">
-                      {product.isFeatured && (
-                        <div className="bg-yellow-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                          <FiStar size={12} />
-                          Featured
-                        </div>
-                      )}
-                      {product.discount > 0 && (
-                        <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
-                          {product.discount}% OFF
+                      </div>
+                      {product.archived && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                          <span className="bg-orange-500 text-white px-3 py-1 rounded text-sm font-medium">
+                            Archived
+                          </span>
                         </div>
                       )}
                     </div>
-                    {product.archived && (
-                      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <span className="bg-orange-500 text-white px-3 py-1 rounded text-sm font-medium">
-                          Archived
+
+                    {/* Product Info */}
+                    <div className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-medium text-gray-900 line-clamp-2 flex-1">
+                          {product.name}
+                        </h3>
+                        <span className="text-xs text-gray-500 ml-2">
+                          #{product.productId}
                         </span>
                       </div>
-                    )}
-                  </div>
 
-                  {/* Product Info */}
-                  <div className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-medium text-gray-900 line-clamp-2 flex-1">
-                        {product.name}
-                      </h3>
-                      <span className="text-xs text-gray-500 ml-2">
-                        #{product.productId}
-                      </span>
-                    </div>
+                      <p className="text-sm text-gray-600 mb-3">
+                        {product.category?.name || "Uncategorized"}
+                      </p>
 
-                    <p className="text-sm text-gray-600 mb-3">
-                      {product.category?.name || "Uncategorized"}
-                    </p>
-
-                    {/* Price */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-lg font-bold text-gray-900">
-                        ${finalPrice}
-                      </span>
-                      {product.discount > 0 && (
-                        <span className="text-sm text-gray-500 line-through">
-                          ${product.price.toFixed(2)}
+                      {/* Price */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-lg font-bold text-gray-900">
+                          ${finalPrice}
                         </span>
-                      )}
-                    </div>
+                        {product.discount > 0 && (
+                          <span className="text-sm text-gray-500 line-through">
+                            ${product.price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
 
-                    {/* Stock Status */}
-                    <div className="mb-4">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stockStatus.color}`}
-                      >
-                        {stockStatus.text} ({product.stock || 0})
-                      </span>
-                    </div>
+                      {/* Stock Status */}
+                      <div className="mb-4">
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stockStatus.color}`}
+                        >
+                          {stockStatus.text} ({product.stock || 0})
+                        </span>
+                      </div>
 
-                    {/* Action Buttons */}
-                    <div className="relative">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDropdown(product._id);
-                        }}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
-                      >
-                        <FiMoreVertical size={16} />
-                        Actions
-                      </button>
-
-                      {/* Dropdown Menu */}
-                      {dropdownOpen[product._id] && (
-                        <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                          <div className="py-1">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("View product:", product._id);
-                                closeAllDropdowns();
-                              }}
-                              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                            >
-                              <FiEye size={14} />
-                              View Details
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("Edit product:", product._id);
-                                closeAllDropdowns();
-                              }}
-                              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors"
-                            >
-                              <FiEdit3 size={14} />
-                              Edit Product
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleArchive(product._id, product.archived);
-                                closeAllDropdowns();
-                              }}
-                              className={`w-full flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
-                                product.archived
-                                  ? "text-green-700 hover:bg-green-50"
-                                  : "text-orange-700 hover:bg-orange-50"
-                              }`}
-                            >
-                              <FiArchive size={14} />
-                              {product.archived
-                                ? "Restore Product"
-                                : "Archive Product"}
-                            </button>
-                            <div className="border-t border-gray-100 my-1"></div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(product._id);
-                                closeAllDropdowns();
-                              }}
-                              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-700 hover:bg-red-50 transition-colors"
-                            >
-                              <FiTrash2 size={14} />
-                              Delete Product
-                            </button>
-                          </div>
-                        </div>
-                      )}
+                      {/* Action Buttons */}
+                      <div className="flex gap-1 overflow-x-auto pb-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewProduct(product._id);
+                          }}
+                          className="flex items-center gap-1 px-2 py-1.5 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0"
+                          title="View Details"
+                        >
+                          <FiEye size={12} />
+                          View
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProduct(product._id);
+                          }}
+                          className="flex items-center gap-1 px-2 py-1.5 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors whitespace-nowrap flex-shrink-0"
+                          title="Edit Product"
+                        >
+                          <FiEdit3 size={12} />
+                          Edit
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleArchive(product._id, product.archived);
+                          }}
+                          className={`flex items-center gap-1 px-2 py-1.5 text-xs rounded transition-colors whitespace-nowrap flex-shrink-0 ${
+                            product.archived
+                              ? "bg-green-100 text-green-700 hover:bg-green-200"
+                              : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                          }`}
+                          title={
+                            product.archived
+                              ? "Restore Product"
+                              : "Archive Product"
+                          }
+                        >
+                          <FiArchive size={12} />
+                          {product.archived ? "Restore" : "Archive"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(product._id);
+                          }}
+                          className="flex items-center gap-1 px-2 py-1.5 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors whitespace-nowrap flex-shrink-0"
+                          title="Delete Product"
+                        >
+                          <FiTrash2 size={12} />
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 
