@@ -117,14 +117,7 @@ const adminDashboard = () => {
       hoverColor: "hover:bg-orange-700",
       action: "manage-categories",
     },
-    {
-      title: "Manage Users",
-      description: "View and manage customer accounts",
-      icon: FiUsers,
-      color: "bg-indigo-600",
-      hoverColor: "hover:bg-indigo-700",
-      action: "manage-users",
-    },
+
     {
       title: "Analytics",
       description: "View sales and performance reports",
@@ -140,14 +133,6 @@ const adminDashboard = () => {
       color: "bg-teal-600",
       hoverColor: "hover:bg-teal-700",
       action: "inventory",
-    },
-    {
-      title: "Settings",
-      description: "Configure store settings",
-      icon: FiSettings,
-      color: "bg-gray-600",
-      hoverColor: "hover:bg-gray-700",
-      action: "settings",
     },
   ];
 
