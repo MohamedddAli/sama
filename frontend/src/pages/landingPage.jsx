@@ -603,7 +603,9 @@ export default function LandingPage() {
                                 </div>
                               </div>
                               <h3 className="font-medium text-gray-900 mb-2 line-clamp-2">
-                                {product.name}
+                                <Link to={`/product/${product._id}`}>
+                                  {product.name}
+                                </Link>
                               </h3>
                               <p className="text-sm text-gray-600 mb-2">
                                 {product.category?.name || "Uncategorized"}
