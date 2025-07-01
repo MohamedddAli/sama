@@ -6,6 +6,7 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  getFeaturedProducts,
 } from "../controllers/product.js";
 import { getProductsByCategory } from "../controllers/product.js";
 
@@ -17,4 +18,5 @@ router.get("/:id", getProductById);
 router.put("/:id", updateProduct);
 router.delete("/:id", deleteProduct);
 router.get("/category/:categoryId", getProductsByCategory);
+router.get("/featured", getFeaturedProducts);
 export default router;

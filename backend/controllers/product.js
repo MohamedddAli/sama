@@ -88,3 +88,19 @@ export const getProductsByCategory = async (req, res) => {
     });
   }
 };
+
+export const getFeaturedProducts = async (req, res) => {
+  try {
+    const featuredProducts = await Product.find({ isFeatured: true }).populate(
+      "category"
+    );
+    res.status(200).json(featuredProducts);
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        message: "Failed to fetch featured products",
+        error: err.message,
+      });
+  }
+};
