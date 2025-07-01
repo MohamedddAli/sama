@@ -649,7 +649,7 @@ export default function LandingPage() {
           )}
 
           <div className="text-center mt-8">
-            <Link to="/products">
+            <Link to="/shop">
               <button className="px-8 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-medium">
                 View All Products
               </button>
