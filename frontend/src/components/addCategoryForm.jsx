@@ -15,7 +15,7 @@ const AddCategoryForm = ({ editingCategory = null, onSuccess, onCancel }) => {
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
 
-  const api = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   // Populate form when editing
   useEffect(() => {

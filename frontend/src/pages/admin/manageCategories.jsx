@@ -28,7 +28,7 @@ const manageCategories = () => {
   const [actionMessage, setActionMessage] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState({});
 
-  const api = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     fetchCategories();

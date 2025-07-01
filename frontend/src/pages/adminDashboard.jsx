@@ -16,6 +16,7 @@ import {
   FiTrendingUp,
   FiDollarSign,
   FiEye,
+  FiMessageSquare,
 } from "react-icons/fi";
 import { MdDashboard, MdCategory, MdInventory } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -133,6 +134,14 @@ const adminDashboard = () => {
       color: "bg-teal-600",
       hoverColor: "hover:bg-teal-700",
       action: "inventory",
+    },
+    {
+      title: "Messages",
+      description: "Manage customer messages",
+      icon: FiMessageSquare,
+      color: "bg-teal-600",
+      hoverColor: "hover:bg-teal-700",
+      action: "messages",
     },
   ];
 

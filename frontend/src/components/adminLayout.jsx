@@ -9,6 +9,7 @@ import {
   FiShoppingBag,
   FiUsers,
   FiSettings,
+  FiMessageSquare,
 } from "react-icons/fi";
 import { MdDashboard, MdCategory } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -48,17 +49,18 @@ const adminLayout = ({ children, currentPage = "dashboard" }) => {
       icon: FiShoppingBag,
       current: currentPage === "orders",
     },
-    {
-      name: "Customers",
-      href: "/admin/customers",
-      icon: FiUsers,
-      current: currentPage === "customers",
-    },
+
     {
       name: "Analytics",
       href: "/admin/analytics",
       icon: FiUsers,
       current: currentPage === "analytics",
+    },
+    {
+      name: "Messages",
+      href: "/admin/messages",
+      icon: FiMessageSquare,
+      current: currentPage === "messages",
     },
   ];
 

@@ -476,7 +476,7 @@ const Shop = () => {
 
               if (viewMode === "list") {
                 return (
-                  <Link to={`/checkout/${product.productId}`} key={product._id}>
+                  <Link to={`/product/${product._id}`} key={product._id}>
                     <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow group">
                       <div className="flex gap-6">
                         <div className="relative w-32 h-32 flex-shrink-0 group">
@@ -604,7 +604,7 @@ const Shop = () => {
 
               // Grid view
               return (
-                <Link to={`/checkout/${product.productId}`} key={product._id}>
+                <Link to={`/product/${product._id}`} key={product._id}>
                   <div className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow group">
                     <div className="relative mb-4 group">
                       {product.images && product.images.length > 0 ? (
