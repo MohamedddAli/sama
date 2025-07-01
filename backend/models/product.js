@@ -23,6 +23,7 @@ const productSchema = new mongoose.Schema(
       min: 0,
       max: 100,
       default: 0,
+      required: false,
     },
     description: {
       type: String,
