@@ -20,7 +20,7 @@ const AddProductForm = () => {
     price: "",
     discount: 0,
     description: "",
-    image: "",
+    images: [], // Changed from "image" to "images" array
     category: "",
     stock: "",
     isFeatured: false,
@@ -31,6 +31,7 @@ const AddProductForm = () => {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const [currentImageUrl, setCurrentImageUrl] = useState("");
   const api = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch categories when the component mounts
@@ -59,15 +60,11 @@ const AddProductForm = () => {
       newErrors.discount = "Discount must be between 0-100%";
     if (!product.description.trim())
       newErrors.description = "Description is required";
-    if (!product.image.trim()) newErrors.image = "Image URL is required";
+    if (!product.images || product.images.length === 0)
+      newErrors.images = "At least one image is required";
     if (!product.category) newErrors.category = "Category is required";
     if (!product.stock || product.stock < 0)
       newErrors.stock = "Stock must be 0 or greater";
-
-    // Basic URL validation for image
-    if (product.image && !isValidUrl(product.image)) {
-      newErrors.image = "Please enter a valid URL";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -103,6 +100,32 @@ const AddProductForm = () => {
     }
   };
 
+  const addImage = () => {
+    if (currentImageUrl && isValidUrl(currentImageUrl)) {
+      if (!product.images.includes(currentImageUrl)) {
+        setProduct((prev) => ({
+          ...prev,
+          images: [...prev.images, currentImageUrl],
+        }));
+        setCurrentImageUrl("");
+        // Clear image error if it exists
+        if (errors.images) {
+          setErrors((prev) => ({
+            ...prev,
+            images: "",
+          }));
+        }
+      }
+    }
+  };
+
+  const removeImage = (indexToRemove) => {
+    setProduct((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -125,11 +148,12 @@ const AddProductForm = () => {
         price: "",
         discount: 0,
         description: "",
-        image: "",
+        images: [], // Changed from image: ""
         category: "",
         stock: "",
         isFeatured: false,
       });
+      setCurrentImageUrl(""); // Add this line
       setErrors({});
     } catch (err) {
       console.error(err);
@@ -500,48 +524,56 @@ const AddProductForm = () => {
               </p>
             </div>
 
-            {/* Image URL */}
+            {/* Multiple Images */}
             <div>
-              <label
-                htmlFor="image"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Image URL *
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Images *
               </label>
-              <div className="relative">
-                <input
-                  id="image"
-                  name="image"
-                  type="url"
-                  placeholder="https://example.com/product-image.jpg"
-                  value={product.image}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 placeholder-gray-500 ${
-                    errors.image
-                      ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                      : "border-gray-300"
-                  }`}
-                />
-                <FiImage
-                  className="absolute left-3 top-3.5 text-gray-400"
-                  size={18}
-                />
+
+              {/* Add Image Input */}
+              <div className="flex gap-2 mb-4">
+                <div className="relative flex-1">
+                  <input
+                    type="url"
+                    placeholder="https://example.com/product-image.jpg"
+                    value={currentImageUrl}
+                    onChange={(e) => setCurrentImageUrl(e.target.value)}
+                    disabled={isSubmitting}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 placeholder-gray-500"
+                  />
+                  <FiImage
+                    className="absolute left-3 top-3.5 text-gray-400"
+                    size={18}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={addImage}
+                  disabled={
+                    !currentImageUrl ||
+                    !isValidUrl(currentImageUrl) ||
+                    isSubmitting
+                  }
+                  className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  Add Image
+                </button>
               </div>
-              {errors.image && (
-                <p className="mt-1 text-sm text-red-600">{errors.image}</p>
+
+              {errors.images && (
+                <p className="mb-3 text-sm text-red-600">{errors.images}</p>
               )}
 
-              {/* Image Preview */}
-              {product.image && isValidUrl(product.image) && (
-                <div className="mt-3">
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    Image Preview:
+              {/* Current Image Preview */}
+              {currentImageUrl && isValidUrl(currentImageUrl) && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-medium text-blue-800 mb-2">
+                    Preview:
                   </p>
-                  <div className="w-32 h-32 border border-gray-300 rounded-lg overflow-hidden">
+                  <div className="w-20 h-20 border border-blue-300 rounded-lg overflow-hidden">
                     <img
-                      src={product.image || "/placeholder.svg"}
-                      alt="Product preview"
+                      src={currentImageUrl || "/placeholder.svg"}
+                      alt="Current preview"
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.style.display = "none";
@@ -550,6 +582,47 @@ const AddProductForm = () => {
                   </div>
                 </div>
               )}
+
+              {/* Added Images List */}
+              {product.images.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-3">
+                    Added Images ({product.images.length}):
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {product.images.map((imageUrl, index) => (
+                      <div key={index} className="relative group">
+                        <div className="w-full h-24 border border-gray-300 rounded-lg overflow-hidden">
+                          <img
+                            src={imageUrl || "/placeholder.svg"}
+                            alt={`Product image ${index + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          disabled={isSubmitting}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors disabled:cursor-not-allowed opacity-0 group-hover:opacity-100"
+                        >
+                          <FiX size={14} />
+                        </button>
+                        <p className="text-xs text-gray-500 mt-1 text-center">
+                          Image {index + 1}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <p className="mt-2 text-xs text-gray-500">
+                Add multiple high-quality images to showcase your product from
+                different angles
+              </p>
             </div>
           </div>
         </div>
@@ -565,11 +638,12 @@ const AddProductForm = () => {
                 price: "",
                 discount: 0,
                 description: "",
-                image: "",
+                images: [], // Changed from image: ""
                 category: "",
                 stock: "",
                 isFeatured: false,
               });
+              setCurrentImageUrl(""); // Add this line
               setErrors({});
             }}
             disabled={isSubmitting}

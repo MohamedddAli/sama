@@ -3,7 +3,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { FiUpload, FiTag, FiImage, FiCheck, FiX } from "react-icons/fi";
-const api = import.meta.env.VITE_API_BASE_URL;
 
 const AddCategoryForm = () => {
   const [category, setCategory] = useState({
@@ -15,6 +14,7 @@ const AddCategoryForm = () => {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
   const [submitMessage, setSubmitMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   const validateForm = () => {
     const newErrors = {};
