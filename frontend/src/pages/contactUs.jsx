@@ -1,16 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  FiSearch,
-  FiShoppingCart,
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiClock,
-} from "react-icons/fi";
+
+import { FiMail, FiPhone, FiMapPin, FiClock } from "react-icons/fi";
+
 import Header from "../components/header"; // Assuming you have a Header component
+import { useNavigate } from "react-router-dom";
 
 const contactUs = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +29,17 @@ const contactUs = () => {
     // Handle form submission here
     console.log("Form submitted:", formData);
     // You can add your form submission logic here
+  };
+
+  const navigate = useNavigate();
+
+  const openLocationInMaps = () => {
+    const address = "المنطقة الصناعية التجمع الخامس القاهرة الجديدة مصر";
+    const encodedAddress = encodeURIComponent(address);
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`,
+      "_blank"
+    );
   };
 
   return (
@@ -73,7 +79,6 @@ const contactUs = () => {
                 Phone
               </h3>
               <p className="text-gray-600">+02 01061945540</p>
-              <p className="text-gray-600">+1 (555) 987-6543</p>
             </div>
 
             {/* Email */}
@@ -129,6 +134,7 @@ const contactUs = () => {
                   Send us a Message
                 </h2>
               </div>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -200,14 +206,32 @@ const contactUs = () => {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white text-gray-900 appearance-none"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' strokeLinecap='round' strokeLinejoin='round' strokeWidth='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                        backgroundPosition: "right 0.5rem center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "1.5em 1.5em",
+                      }}
                     >
-                      <option value="">Select a subject</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="product">Product Question</option>
-                      <option value="support">Technical Support</option>
-                      <option value="quote">Request Quote</option>
-                      <option value="other">Other</option>
+                      <option value="" style={{ color: "#9CA3AF" }}>
+                        Select a subject
+                      </option>
+                      <option value="general" style={{ color: "#111827" }}>
+                        General Inquiry
+                      </option>
+                      <option value="product" style={{ color: "#111827" }}>
+                        Product Question
+                      </option>
+                      <option value="support" style={{ color: "#111827" }}>
+                        Technical Support
+                      </option>
+                      <option value="quote" style={{ color: "#111827" }}>
+                        Request Quote
+                      </option>
+                      <option value="other" style={{ color: "#111827" }}>
+                        Other
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -242,28 +266,45 @@ const contactUs = () => {
 
             {/* Map & Additional Info */}
             <div className="space-y-8">
-              {/* Map Placeholder */}
+              {/* Interactive Map */}
               <div className="bg-white rounded-lg border border-gray-200 p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">
                   Visit Our Showroom
                 </h3>
-                <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center mb-4">
-                  <div className="text-center">
-                    <FiMapPin
-                      size={48}
-                      className="text-gray-400 mx-auto mb-2"
-                    />
-                    <p className="text-gray-500">Interactive Map</p>
-                    <p className="text-sm text-gray-400">
-                      123 Design Street, New York, NY 10001
-                    </p>
-                  </div>
+
+                {/* Embedded Google Map */}
+                <div className="rounded-lg overflow-hidden mb-4">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3456.3758050438996!2d31.485655776110622!3d29.968628022157958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583d386f277ec7%3A0x2dd3d094a4305490!2zU2FtYSBpbnRlcm5hdGlvbmFsIC0g2LPZhdinINin2YTYudin2YTZhdmK2Kk!5e0!3m2!1sen!2seg!4v1751338394974!5m2!1sen!2seg"
+                    width="100%"
+                    height="250"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="rounded-lg"
+                  ></iframe>
                 </div>
-                <p className="text-gray-600 text-sm">
-                  Visit our showroom to see our complete collection of bathroom
-                  and kitchen fixtures. Our design experts are available to help
-                  you choose the perfect pieces for your space.
-                </p>
+
+                <div className="mb-4">
+                  <p className="text-gray-600 text-sm mb-2">
+                    المنطقة الصناعية - التجمع الخامس - 31/2
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    Visit our showroom to see our complete collection of
+                    bathroom and kitchen fixtures. Our design experts are
+                    available to help you choose the perfect pieces for your
+                    space.
+                  </p>
+                </div>
+
+                <button
+                  onClick={openLocationInMaps}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <FiMapPin size={16} />
+                  Open in Google Maps
+                </button>
               </div>
 
               {/* FAQ Section */}
@@ -318,11 +359,11 @@ const contactUs = () => {
               fixtures, or visit our showroom for a personalized experience.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-md font-medium transition-colors">
+              <button
+                onClick={() => navigate("/shop")}
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-md font-medium transition-colors"
+              >
                 Browse Products
-              </button>
-              <button className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-md font-medium transition-colors">
-                Schedule Visit
               </button>
             </div>
           </div>
