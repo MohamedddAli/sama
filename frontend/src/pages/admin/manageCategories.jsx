@@ -148,9 +148,9 @@ const manageCategories = () => {
 
   return (
     <AdminLayout currentPage="categories">
-      <div className="w-full max-w-screen overflow-hidden">
+      <div className="w-full min-w-screen overflow-hidden">
         {/* Header */}
-        <div className="mb-8 px-4 lg:px-6">
+        <div className="mb-8 px-4 max-w-7xl lg:px-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 truncate">
@@ -258,7 +258,7 @@ const manageCategories = () => {
               </div>
 
               {/* Stats */}
-              <div className="flex items-center gap-4 lg:gap-6 text-xs lg:text-sm text-gray-600 flex-shrink-0">
+              <div className="flex items-center gap-4 lg:gap-6 text-xs lg:text-sm text-gray-600 flex-shrink-0 max-w-xs">
                 <span className="whitespace-nowrap">
                   Total: {categories.length}
                 </span>
@@ -271,7 +271,7 @@ const manageCategories = () => {
         </div>
 
         {/* Categories Grid Container */}
-        <div className=" overflow-x-auto">
+        <div className=" flex ">
           <div className="px-4 lg:px-6">
             {/* Categories Grid */}
             {filteredCategories.length === 0 ? (
@@ -297,7 +297,7 @@ const manageCategories = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6 min-w-max">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6 w-full">
                 {filteredCategories.map((category) => (
                   <div
                     key={category._id}

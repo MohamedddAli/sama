@@ -77,22 +77,12 @@ const Header = () => {
 
           {/* Right-side icons */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Search Icon - Hidden on small screens */}
-            <button className="hidden sm:block p-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <FiSearch size={20} />
-            </button>
-
             {/* Shopping Cart */}
             <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors relative">
               <FiShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 0
               </span>
-            </button>
-
-            {/* User Icon - Hidden on small screens */}
-            <button className="hidden sm:block p-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <FiUser size={20} />
             </button>
 
             {/* Mobile menu button */}

@@ -2,23 +2,20 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/header";
-
-import { FiStar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
-
+import { FiStar, FiChevronLeft, FiChevronRight, FiUser } from "react-icons/fi";
+import { CgQuote } from "react-icons/cg";
 import {
   MdBathtub, // Bathroom Vanities
   MdShower, // Smart Shower, Shower Cabinet
   MdWc, // Toilet
 } from "react-icons/md";
-
 import {
   GiFlowerPot, // Indian Porcelain
   GiWaterDrop, // Kitchen Sink
   GiJewelCrown, // Accessories
 } from "react-icons/gi";
-
 import { Droplet, Square } from "lucide-react";
 
 export default function LandingPage() {
@@ -26,6 +23,7 @@ export default function LandingPage() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Category slideshow state
   const [currentCategorySlide, setCurrentCategorySlide] = useState(0);
@@ -45,6 +43,9 @@ export default function LandingPage() {
     minutes: 56,
     seconds: 4,
   });
+
+  // Testimonials state
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   // API base URL
   const api = import.meta.env.VITE_API_BASE_URL;
@@ -76,6 +77,42 @@ export default function LandingPage() {
     "bg-yellow-100",
     "bg-gray-100",
     "bg-teal-100",
+  ];
+
+  // Sample testimonials data
+  const testimonials = [
+    {
+      id: 1,
+      name: "Ahmed Hassan",
+      location: "Cairo, Egypt",
+      rating: 5,
+      text: "Exceptional quality products! The bathroom vanity I purchased exceeded my expectations. The installation was smooth and the customer service was outstanding.",
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
+    {
+      id: 2,
+      name: "Fatima Al-Zahra",
+      location: "Alexandria, Egypt",
+      rating: 5,
+      text: "I renovated my entire kitchen with Sama International's products. The quality is premium and the prices are very competitive. Highly recommended!",
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
+    {
+      id: 3,
+      name: "Mohamed Salah",
+      location: "Giza, Egypt",
+      rating: 5,
+      text: "Professional service from start to finish. The smart shower system I bought has transformed my daily routine. Worth every penny!",
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
+    {
+      id: 4,
+      name: "Nour Ibrahim",
+      location: "Mansoura, Egypt",
+      rating: 5,
+      text: "Beautiful designs and excellent craftsmanship. The mirror and accessories perfectly complement my bathroom renovation. Thank you Sama International!",
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
   ];
 
   // Fetch data on component mount
@@ -112,6 +149,15 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, []);
 
+  // Testimonials auto-rotation
+  useEffect(() => {
+    const testimonialTimer = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000); // Change every 5 seconds
+
+    return () => clearInterval(testimonialTimer);
+  }, []);
+
   // Handle responsive slides per view
   useEffect(() => {
     const handleResize = () => {
@@ -139,7 +185,6 @@ export default function LandingPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-
       // Fetch categories and featured products in parallel
       const [categoriesResponse, productsResponse] = await Promise.all([
         axios.get(`${api}/category`),
@@ -147,7 +192,6 @@ export default function LandingPage() {
       ]);
 
       setCategories(categoriesResponse.data);
-
       // Filter featured products
       const featured = productsResponse.data.filter(
         (product) => product.isFeatured && !product.archived
@@ -166,6 +210,11 @@ export default function LandingPage() {
       return (price - (price * discount) / 100).toFixed(2);
     }
     return price.toFixed(2);
+  };
+
+  // Handle Shop Sale Items click
+  const handleShopSaleItems = () => {
+    navigate("/shop?sale=true");
   };
 
   // Category slideshow functions
@@ -203,6 +252,17 @@ export default function LandingPage() {
       ...prev,
       [productId]: prev[productId] > 0 ? prev[productId] - 1 : totalImages - 1,
     }));
+  };
+
+  // Testimonial navigation
+  const nextTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setCurrentTestimonial(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+    );
   };
 
   // Get visible categories for current slide
@@ -245,7 +305,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen min-w-screen bg-gray-50">
+    <div className="min-h-screen min-w-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <Header />
 
@@ -273,6 +333,7 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
+
             <div className="relative">
               <div className="relative z-10">
                 <img
@@ -331,12 +392,10 @@ export default function LandingPage() {
                 const getCategoriesForSlide = (slideIndex) => {
                   const startIndex = slideIndex * categoriesPerSlide;
                   const categoriesForSlide = [];
-
                   for (let i = 0; i < categoriesPerSlide; i++) {
                     const categoryIndex = (startIndex + i) % categories.length;
                     categoriesForSlide.push(categories[categoryIndex]);
                   }
-
                   return categoriesForSlide;
                 };
 
@@ -435,10 +494,14 @@ export default function LandingPage() {
                   <div className="text-sm text-gray-600">Seconds</div>
                 </div>
               </div>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md font-medium transition-colors">
+              <button
+                onClick={handleShopSaleItems}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md font-medium transition-colors"
+              >
                 Shop Sale Items!
               </button>
             </div>
+
             <div className="relative">
               <img
                 src="https://dummyimage.com/400x400/f3f4f6/9ca3af&text=Featured+Product"
@@ -493,13 +556,11 @@ export default function LandingPage() {
                   const getProductsForSlide = (slideIndex) => {
                     const startIndex = slideIndex * productsPerSlide;
                     const productsForSlide = [];
-
                     for (let i = 0; i < productsPerSlide; i++) {
                       const productIndex =
                         (startIndex + i) % featuredProducts.length;
                       productsForSlide.push(featuredProducts[productIndex]);
                     }
-
                     return productsForSlide;
                   };
 
@@ -551,7 +612,6 @@ export default function LandingPage() {
                                         / {product.images.length}
                                       </div>
                                     )}
-
                                     {/* Navigation Arrows - Only show if more than 1 image */}
                                     {product.images.length > 1 && (
                                       <>
@@ -587,7 +647,6 @@ export default function LandingPage() {
                                     className="w-full h-48 object-cover rounded-lg"
                                   />
                                 )}
-
                                 <div className="absolute top-2 right-2 flex flex-col gap-1">
                                   {product.isFeatured && (
                                     <span className="bg-yellow-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -602,14 +661,17 @@ export default function LandingPage() {
                                   )}
                                 </div>
                               </div>
+
                               <h3 className="font-medium text-gray-900 mb-2 line-clamp-2">
                                 <Link to={`/product/${product._id}`}>
                                   {product.name}
                                 </Link>
                               </h3>
+
                               <p className="text-sm text-gray-600 mb-2">
                                 {product.category?.name || "Uncategorized"}
                               </p>
+
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-lg font-bold text-gray-900">
                                   {finalPrice} EGP
@@ -620,6 +682,7 @@ export default function LandingPage() {
                                   </span>
                                 )}
                               </div>
+
                               <div className="flex items-center justify-between">
                                 <span
                                   className={`text-xs px-2 py-1 rounded-full ${
@@ -651,7 +714,6 @@ export default function LandingPage() {
               </p>
             </div>
           )}
-
           <div className="text-center mt-8">
             <Link to="/shop">
               <button className="px-8 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors font-medium">
@@ -661,6 +723,121 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Customer Testimonials */}
+      <section className="py-16 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className="text-green-600 font-medium">
+                Customer Reviews
+              </span>
+            </div>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              What Our Customers Say
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Don't just take our word for it. Here's what our satisfied
+              customers have to say about their experience with Sama
+              International.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 max-w-4xl mx-auto">
+              <div className="flex items-center justify-center mb-6">
+                <CgQuote size={48} className="text-blue-600 opacity-20" />
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-4">
+                  {[...Array(testimonials[currentTestimonial].rating)].map(
+                    (_, i) => (
+                      <FiStar
+                        key={i}
+                        size={20}
+                        className="text-yellow-400 fill-current"
+                      />
+                    )
+                  )}
+                </div>
+
+                <p className="text-lg lg:text-xl text-gray-700 mb-8 leading-relaxed">
+                  "{testimonials[currentTestimonial].text}"
+                </p>
+
+                <div className="flex items-center justify-center gap-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                    <FiUser size={24} className="text-blue-600" />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-semibold text-gray-900 text-lg">
+                      {testimonials[currentTestimonial].name}
+                    </h4>
+                    <p className="text-gray-600">
+                      {testimonials[currentTestimonial].location}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevTestimonial}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow border border-gray-200"
+            >
+              <FiChevronLeft size={20} className="text-gray-600" />
+            </button>
+            <button
+              onClick={nextTestimonial}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow border border-gray-200"
+            >
+              <FiChevronRight size={20} className="text-gray-600" />
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="flex items-center justify-center mt-8 gap-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentTestimonial(index)}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    index === currentTestimonial ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer CTA */}
+      <footer className="bg-gradient-to-r from-blue-600 to-indigo-600 w-full">
+        <div className="max-w-full px-8 lg:px-12 py-16 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+            Ready to Transform Your Space?
+          </h2>
+          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+            Browse our extensive collection of premium bathroom and kitchen
+            fixtures, or get in touch with our experts for personalized
+            recommendations.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/shop">
+              <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors">
+                Browse All Products
+              </button>
+            </Link>
+            <Link to="/contact-us">
+              <button className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-medium transition-colors">
+                Contact Us
+              </button>
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
