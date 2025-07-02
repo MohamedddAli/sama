@@ -5,6 +5,7 @@ import cors from "cors";
 import productRouter from "./routes/product.js";
 import categoryRouter from "./routes/category.js";
 import messageRouter from "./routes/message.js";
+import cartRouter from "./routes/cart.js";
 
 // Import environment variables and connect to MongoDB
 import dotenv from "dotenv";
@@ -39,5 +40,6 @@ app.use(cors());
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/message", messageRouter);
+app.use("/cart", cartRouter);
 
 export default app;
