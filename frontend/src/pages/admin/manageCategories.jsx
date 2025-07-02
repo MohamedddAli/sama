@@ -148,7 +148,7 @@ const manageCategories = () => {
 
   return (
     <AdminLayout currentPage="categories">
-      <div className="w-full max-w-7xl overflow-hidden">
+      <div className="w-full max-w-screen overflow-hidden">
         {/* Header */}
         <div className="mb-8 px-4 lg:px-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -271,7 +271,7 @@ const manageCategories = () => {
         </div>
 
         {/* Categories Grid Container */}
-        <div className="min-w-screen w-full overflow-x-auto">
+        <div className=" overflow-x-auto">
           <div className="px-4 lg:px-6">
             {/* Categories Grid */}
             {filteredCategories.length === 0 ? (

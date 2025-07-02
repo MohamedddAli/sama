@@ -214,9 +214,6 @@ const Categories = () => {
                       products
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                        Category
-                      </span>
                       <div className="flex items-center text-blue-600 text-sm font-medium group-hover:text-blue-700">
                         Browse
                         <FiArrowRight
