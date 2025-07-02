@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/header";
 import { Link } from "react-router-dom";
@@ -21,6 +22,7 @@ const Shop = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchParams] = useSearchParams();
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,6 +45,22 @@ const Shop = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Check URL parameters and set filters accordingly
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    const saleParam = searchParams.get("sale");
+
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+      setShowFilters(true); // Show filters to indicate active filtering
+    }
+
+    if (saleParam === "true") {
+      setShowDiscountedOnly(true);
+      setShowFilters(true); // Show filters to indicate active filtering
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     filterAndSortProducts();
@@ -69,6 +87,7 @@ const Shop = () => {
       const activeProducts = productsResponse.data.filter(
         (product) => !product.archived
       );
+
       setProducts(activeProducts);
       setCategories(categoriesResponse.data);
     } catch (err) {
@@ -105,6 +124,7 @@ const Shop = () => {
         return finalPrice >= Number.parseFloat(priceRange.min);
       });
     }
+
     if (priceRange.max !== "") {
       filtered = filtered.filter((product) => {
         const finalPrice = getDiscountedPrice(product.price, product.discount);
@@ -173,6 +193,41 @@ const Shop = () => {
     setShowInStockOnly(false);
   };
 
+  // Get active filter count for display
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (searchTerm) count++;
+    if (selectedCategory) count++;
+    if (priceRange.min || priceRange.max) count++;
+    if (showDiscountedOnly) count++;
+    if (showInStockOnly) count++;
+    return count;
+  };
+
+  // Get active filter description
+  const getActiveFilterDescription = () => {
+    const filters = [];
+    if (selectedCategory) {
+      const category = categories.find((cat) => cat._id === selectedCategory);
+      filters.push(`Category: ${category?.name || "Unknown"}`);
+    }
+    if (showDiscountedOnly) {
+      filters.push("On Sale Items");
+    }
+    if (showInStockOnly) {
+      filters.push("In Stock Only");
+    }
+    if (searchTerm) {
+      filters.push(`Search: "${searchTerm}"`);
+    }
+    if (priceRange.min || priceRange.max) {
+      filters.push(
+        `Price: ${priceRange.min || "0"} - ${priceRange.max || "∞"} EGP`
+      );
+    }
+    return filters.join(", ");
+  };
+
   // Product image navigation functions
   const nextProductImage = (productId, totalImages) => {
     setCurrentImageIndex((prev) => ({
@@ -237,6 +292,29 @@ const Shop = () => {
           <p className="text-gray-600">
             Discover our complete collection of premium products
           </p>
+
+          {/* Active Filters Display */}
+          {getActiveFilterCount() > 0 && (
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-blue-800">
+                    Active Filters ({getActiveFilterCount()}):
+                  </p>
+                  <p className="text-sm text-blue-600">
+                    {getActiveFilterDescription()}
+                  </p>
+                </div>
+                <button
+                  onClick={clearFilters}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+                >
+                  <FiX size={14} />
+                  Clear All
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Filters and Search Bar */}
@@ -271,6 +349,11 @@ const Shop = () => {
               >
                 <FiFilter size={16} />
                 Filters
+                {getActiveFilterCount() > 0 && (
+                  <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getActiveFilterCount()}
+                  </span>
+                )}
               </button>
 
               <button
@@ -502,7 +585,6 @@ const Shop = () => {
                                   {product.images.length}
                                 </div>
                               )}
-
                               {/* Navigation Arrows */}
                               {product.images.length > 1 && (
                                 <>
@@ -565,6 +647,7 @@ const Shop = () => {
                           <p className="text-sm text-gray-600 mb-2">
                             {product.category?.name || "Uncategorized"}
                           </p>
+
                           <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                             {product.description}
                           </p>
@@ -580,7 +663,6 @@ const Shop = () => {
                                 </span>
                               )}
                             </div>
-
                             <span
                               className={`text-xs px-2 py-1 rounded-full ${
                                 product.stock > 10
@@ -667,7 +749,6 @@ const Shop = () => {
                           className="w-full h-48 object-cover rounded-lg"
                         />
                       )}
-
                       <div className="absolute top-2 right-2 flex flex-col gap-1">
                         {product.isFeatured && (
                           <span className="bg-yellow-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -686,6 +767,7 @@ const Shop = () => {
                     <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                       {product.name}
                     </h3>
+
                     <p className="text-sm text-gray-600 mb-2">
                       {product.category?.name || "Uncategorized"}
                     </p>

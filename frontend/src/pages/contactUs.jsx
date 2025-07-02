@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-
 import { FiMail, FiPhone, FiMapPin, FiClock } from "react-icons/fi";
-
-import Header from "../components/header"; // Assuming you have a Header component
+import Header from "../components/header";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const contactUs = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +15,13 @@ const contactUs = () => {
     message: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  const navigate = useNavigate();
+  const api = import.meta.env.VITE_API_BASE_URL;
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -24,14 +30,48 @@ const contactUs = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    // You can add your form submission logic here
-  };
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setSubmitMessage("");
 
-  const navigate = useNavigate();
+    try {
+      // Map form data to match backend model
+      const messageData = {
+        fullName: formData.name,
+        emailAddress: formData.email,
+        phoneNumber: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+      };
+
+      await axios.post(`${api}/message`, messageData);
+
+      setSubmitStatus("success");
+      setSubmitMessage(
+        "Thank you! Your message has been sent successfully. We'll get back to you soon."
+      );
+
+      // Reset form after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setSubmitStatus("error");
+      setSubmitMessage(
+        error.response?.data?.message ||
+          "Sorry, there was an error sending your message. Please try again or contact us directly."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const openLocationInMaps = () => {
     const address = "Sama International - سما العالميه";
@@ -135,6 +175,50 @@ const contactUs = () => {
                 </h2>
               </div>
 
+              {/* Status Message */}
+              {submitStatus && (
+                <div
+                  className={`mb-6 p-4 rounded-lg ${
+                    submitStatus === "success"
+                      ? "bg-green-50 border border-green-200 text-green-800"
+                      : "bg-red-50 border border-red-200 text-red-800"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    {submitStatus === "success" ? (
+                      <svg
+                        className="w-5 h-5 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="w-5 h-5 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    )}
+                    <span className="font-medium text-sm">{submitMessage}</span>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -151,7 +235,7 @@ const contactUs = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="w-full px-4 py-2 border text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       placeholder="Your full name"
                     />
                   </div>
@@ -169,7 +253,7 @@ const contactUs = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="w-full text-black px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       placeholder="your.email@example.com"
                     />
                   </div>
@@ -189,8 +273,8 @@ const contactUs = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      placeholder="(555) 123-4567"
+                      className="w-full px-4 py-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      placeholder="0123456789"
                     />
                   </div>
                   <div>
@@ -250,16 +334,24 @@ const contactUs = () => {
                     onChange={handleInputChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
+                    className="w-full px-4 py-2 border text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed text-white px-6 py-3 rounded-md font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
                 >
-                  Send Message
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Message"
+                  )}
                 </button>
               </form>
             </div>
@@ -347,28 +439,26 @@ const contactUs = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 lg:p-12 text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Ready to Transform Your Space?
-            </h2>
-            <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-              Browse our extensive collection of premium bathroom and kitchen
-              fixtures, or visit our showroom for a personalized experience.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => navigate("/shop")}
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-md font-medium transition-colors"
-              >
-                Browse Products
-              </button>
-            </div>
+      {/* Footer-like CTA Section */}
+      <footer className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+            Ready to Transform Your Space?
+          </h2>
+          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+            Browse our extensive collection of premium bathroom and kitchen
+            fixtures, or visit our showroom for a personalized experience.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => navigate("/shop")}
+              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-md font-medium transition-colors"
+            >
+              Browse Products
+            </button>
           </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 };

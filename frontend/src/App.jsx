@@ -11,6 +11,7 @@ import AddCategory from "./pages/admin/addCategory";
 import ViewProducts from "./pages/admin/viewProducts";
 import ManageCategories from "./pages/admin/manageCategories";
 import Categories from "./pages/categories";
+import ManageMessages from "./pages/admin/manageMessages";
 const App = () => {
   return (
     <Routes>
@@ -21,6 +22,7 @@ const App = () => {
       <Route path="/admin/add-product" element={<AddProduct />} />
       <Route path="/admin/view-products" element={<ViewProducts />} />
       <Route path="/admin/manage-categories" element={<ManageCategories />} />
+      <Route path="/admin/manage-messages" element={<ManageMessages />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/categories" element={<Categories />} />

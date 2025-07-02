@@ -414,6 +414,9 @@ export default function LandingPage() {
                         return (
                           <div
                             key={`${category._id}-${slideIndex}-${index}`}
+                            onClick={() =>
+                              navigate(`/shop?category=${category._id}`)
+                            }
                             className="bg-white rounded-lg border border-gray-200 p-6 text-center hover:shadow-md transition-shadow cursor-pointer group"
                           >
                             <div className="relative mb-4">
@@ -796,19 +799,6 @@ export default function LandingPage() {
             >
               <FiChevronRight size={20} className="text-gray-600" />
             </button>
-
-            {/* Dots Indicator */}
-            <div className="flex items-center justify-center mt-8 gap-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentTestimonial ? "bg-blue-600" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>

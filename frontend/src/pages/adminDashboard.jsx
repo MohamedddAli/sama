@@ -141,7 +141,7 @@ const adminDashboard = () => {
       icon: FiMessageSquare,
       color: "bg-teal-600",
       hoverColor: "hover:bg-teal-700",
-      action: "messages",
+      action: "manage-messages",
     },
   ];
 

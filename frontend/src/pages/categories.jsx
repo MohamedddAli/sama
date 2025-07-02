@@ -248,7 +248,7 @@ const Categories = () => {
               Browse All Products
             </button>
             <button
-              onClick={() => navigate("/contact")}
+              onClick={() => navigate("/contact-us")}
               className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 rounded-lg font-medium transition-colors"
             >
               Contact Us

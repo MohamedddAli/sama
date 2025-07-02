@@ -4,6 +4,9 @@ import cors from "cors";
 // Import routes
 import productRouter from "./routes/product.js";
 import categoryRouter from "./routes/category.js";
+import messageRouter from "./routes/message.js";
+
+// Import environment variables and connect to MongoDB
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 dotenv.config();
@@ -35,5 +38,6 @@ app.use(cors());
 // Routes
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
+app.use("/message", messageRouter);
 
 export default app;

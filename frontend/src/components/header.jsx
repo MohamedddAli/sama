@@ -7,11 +7,10 @@ import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX } from "react-icons/fi";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const baseLink =
-    "px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 transition";
+  const baseLink = "px-3 py-2 rounded-md font-medium text-gray-700 transition";
   const activeLink = "text-blue-700 font-semibold underline";
   const mobileBaseLink =
-    "block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition";
+    "block px-3 py-2 rounded-md text-base font-medium text-gray-700 transition";
   const mobileActiveLink = "text-blue-700 font-semibold bg-blue-50";
 
   const toggleMobileMenu = () => {
@@ -78,7 +77,7 @@ const Header = () => {
           {/* Right-side icons */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Shopping Cart */}
-            <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors relative">
+            <button className="p-2 text-gray-600 transition-colors relative">
               <FiShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 0
@@ -88,7 +87,7 @@ const Header = () => {
             {/* Mobile menu button */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="md:hidden p-2 text-gray-600 transition-colors"
               aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -98,7 +97,7 @@ const Header = () => {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 bg-white">
+          <div className="md:hidden border-t border-gray-200 bg-white relative z-50">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <NavLink
                 to="/"
@@ -136,30 +135,18 @@ const Header = () => {
               >
                 Contact
               </NavLink>
-
-              {/* Mobile-only actions */}
-              <div className="border-t border-gray-200 pt-3 mt-3">
-                <button className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition flex items-center gap-3">
-                  <FiSearch size={20} />
-                  Search
-                </button>
-                <button className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition flex items-center gap-3">
-                  <FiUser size={20} />
-                  Account
-                </button>
-              </div>
             </div>
           </div>
         )}
-      </div>
 
-      {/* Mobile menu overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
-          onClick={closeMobileMenu}
-        />
-      )}
+        {/* Mobile menu overlay */}
+        {isMobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-25 z-30 md:hidden"
+            onClick={closeMobileMenu}
+          />
+        )}
+      </div>
     </header>
   );
 };
