@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/header";
+import { useCart } from "../context/cartContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -14,6 +15,8 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const api = import.meta.env.VITE_API_BASE_URL;
+
+  const { sessionId, setCart } = useCart(); // get from context
 
   // Fetch product
   useEffect(() => {
@@ -52,10 +55,13 @@ const ProductDetails = () => {
   // Add to cart function
   const addToCart = async () => {
     try {
-      await axios.post(`${api}/cart/add`, {
+      const res = await axios.post(`${api}/cart/add`, {
+        sessionId,
         productId: product._id,
         quantity: Number(quantity),
       });
+
+      setCart(res.data); // update context state
       alert("🛒 Added to cart!");
     } catch (err) {
       console.error("❌ Failed to add to cart", err);

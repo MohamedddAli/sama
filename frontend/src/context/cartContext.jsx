@@ -4,13 +4,13 @@ import { getSessionId } from "../utils/session";
 import axios from "axios";
 
 const CartContext = createContext();
-
+const api = import.meta.env.VITE_API_BASE_URL;
 export const CartProvider = ({ children }) => {
   const sessionId = getSessionId();
   const [cart, setCart] = useState(null);
 
   useEffect(() => {
-    axios.post("/api/cart/init", { sessionId }).then((res) => {
+    axios.post(`${api}/cart/init`, { sessionId }).then((res) => {
       setCart(res.data);
     });
   }, [sessionId]);

@@ -12,6 +12,8 @@ import ViewProducts from "./pages/admin/viewProducts";
 import ManageCategories from "./pages/admin/manageCategories";
 import Categories from "./pages/categories";
 import ManageMessages from "./pages/admin/manageMessages";
+import ViewCart from "./pages/viewCart";
+import Checkout from "./pages/checkout";
 const App = () => {
   return (
     <Routes>
@@ -27,6 +29,8 @@ const App = () => {
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/categories" element={<Categories />} />
       <Route path="/category/:categoryId" element={<CategoryProducts />} />
+      <Route path="view-cart" element={<ViewCart />} />
+      <Route path="checkout" element={<Checkout />} />
     </Routes>
   );
 };
