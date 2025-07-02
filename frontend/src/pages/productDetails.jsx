@@ -105,7 +105,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen min-w-screen bg-gray-100">
       <Header />
 
       <div className="flex flex-col items-center justify-center min-h-screen py-8">

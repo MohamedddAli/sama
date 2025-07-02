@@ -10,6 +10,7 @@ import AddProduct from "./pages/admin/addProduct";
 import AddCategory from "./pages/admin/addCategory";
 import ViewProducts from "./pages/admin/viewProducts";
 import ManageCategories from "./pages/admin/manageCategories";
+import Categories from "./pages/categories";
 const App = () => {
   return (
     <Routes>
@@ -22,6 +23,7 @@ const App = () => {
       <Route path="/admin/manage-categories" element={<ManageCategories />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/product/:id" element={<ProductDetails />} />
+      <Route path="/categories" element={<Categories />} />
       <Route path="/category/:categoryId" element={<CategoryProducts />} />
     </Routes>
   );

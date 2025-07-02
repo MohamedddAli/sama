@@ -245,7 +245,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen min-w-screen bg-gray-50">
       {/* Header */}
       <Header />
 

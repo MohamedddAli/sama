@@ -34,7 +34,7 @@ const contactUs = () => {
   const navigate = useNavigate();
 
   const openLocationInMaps = () => {
-    const address = "المنطقة الصناعية التجمع الخامس القاهرة الجديدة مصر";
+    const address = "Sama International - سما العالميه";
     const encodedAddress = encodeURIComponent(address);
     window.open(
       `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`,
@@ -43,7 +43,7 @@ const contactUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen min-w-screen bg-gray-50">
       {/* Header */}
       <Header />
 
