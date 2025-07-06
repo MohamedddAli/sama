@@ -31,6 +31,11 @@ const orderSchema = new mongoose.Schema(
     ],
     totalAmount: { type: Number, required: true },
     createdAt: { type: Date, default: Date.now },
+    status: {
+      type: String,
+      enum: ["pending", "processing", "completed", "cancelled"],
+      default: "pending",
+    },
     // Optional: sessionId to track anonymous users
     // sessionId: { type: String },
   },

@@ -239,7 +239,7 @@ const Header = () => {
 
                               <div className="flex-1 min-w-0">
                                 <h4 className="text-sm font-medium text-gray-900 truncate">
-                                  {product || "Unknown Product"}
+                                  {product.name || "Unknown Product"}
                                 </h4>
                                 <div className="flex items-center gap-2 mt-1">
                                   <span className="text-sm font-semibold text-gray-900">

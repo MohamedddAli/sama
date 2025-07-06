@@ -14,6 +14,6 @@ router.post("/init", initCart);
 router.post("/add", addItemToCart);
 router.get("/:sessionId", getCart);
 router.post("/clear", clearCart); // POST /api/cart/clear
-router.post("/remove", removeItemFromCart); // POST /api/cart/remove
+router.delete("/remove", removeItemFromCart); // POST /api/cart/remove
 
 export default router;

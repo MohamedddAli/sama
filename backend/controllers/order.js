@@ -11,10 +11,18 @@ const generateOrderNumber = () => {
 
 export const createOrder = async (req, res) => {
   try {
+    const { customerInfo, items, totalAmount } = req.body;
+
+    if (!customerInfo || !items || !totalAmount) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
     const orderNumber = generateOrderNumber();
 
     const order = new Order({
-      ...req.body,
+      customerInfo,
+      items,
+      totalAmount,
       orderNumber,
     });
 
@@ -26,6 +34,7 @@ export const createOrder = async (req, res) => {
       orderId: order._id,
     });
   } catch (err) {
+    console.error("❌ Order creation error:", err.message);
     res.status(400).json({ error: err.message });
   }
 };

@@ -145,7 +145,7 @@ const Checkout = () => {
         },
         items: cart.items.map((item) => ({
           productId: item.productId._id,
-          quantity: item.productId.quantity,
+          quantity: item.quantity,
           price:
             item.productId.discount > 0
               ? item.productId.price -
@@ -320,7 +320,7 @@ const Checkout = () => {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 text-black focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         formErrors.firstName
                           ? "border-red-300"
                           : "border-gray-300"
@@ -347,7 +347,7 @@ const Checkout = () => {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 text-black focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         formErrors.lastName
                           ? "border-red-300"
                           : "border-gray-300"
@@ -374,7 +374,7 @@ const Checkout = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 text-black focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         formErrors.phone ? "border-red-300" : "border-gray-300"
                       }`}
                       placeholder="+20 123 456 7890"
@@ -399,7 +399,7 @@ const Checkout = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 text-black focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         formErrors.email ? "border-red-300" : "border-gray-300"
                       }`}
                       placeholder="your.email@example.com"
@@ -454,7 +454,7 @@ const Checkout = () => {
                       value={formData.address}
                       onChange={handleInputChange}
                       rows={3}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 text-black focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical ${
                         formErrors.address
                           ? "border-red-300"
                           : "border-gray-300"
@@ -485,7 +485,7 @@ const Checkout = () => {
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring-2 text-black focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         formErrors.city ? "border-red-300" : "border-gray-300"
                       }`}
                       placeholder={

@@ -42,9 +42,9 @@ const AdminLayout = ({ children, currentPage = "dashboard" }) => {
     },
     {
       name: "Orders",
-      href: "/admin/orders",
+      href: "/admin/view-orders",
       icon: FiShoppingBag,
-      current: currentPage === "orders",
+      current: currentPage === "view-orders",
     },
     {
       name: "Analytics",

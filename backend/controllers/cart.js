@@ -46,7 +46,14 @@ export const getCart = async (req, res) => {
   const { sessionId } = req.params;
 
   try {
-    const cart = await Cart.findOne({ sessionId }).populate("items.productId");
+    const cart = await Cart.findOne({ sessionId }).populate({
+      path: "items.productId",
+      populate: {
+        path: "category", // the field inside Product you want to populate
+        model: "Category", // must match the name of your Category model
+      },
+    });
+
     res.json(cart || {});
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve cart" });
@@ -71,7 +78,7 @@ export const clearCart = async (req, res) => {
 };
 
 export const removeItemFromCart = async (req, res) => {
-  const { sessionId, productId } = req.body;
+  const { sessionId, productId } = req.query;
 
   try {
     const cart = await Cart.findOne({ sessionId });

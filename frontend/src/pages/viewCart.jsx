@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiShoppingCart,
@@ -20,6 +20,21 @@ const ViewCart = () => {
   const [updating, setUpdating] = useState({});
   const [removing, setRemoving] = useState({});
   const api = import.meta.env.VITE_API_BASE_URL;
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get(`${api}/cart/${sessionId}`);
+        setCart(response.data);
+      } catch (error) {
+        console.error("❌ Failed to fetch cart:", error);
+      }
+    };
+
+    if (sessionId) {
+      fetchCart();
+    }
+  }, [sessionId]);
 
   const updateCartItemQuantity = async (productId, newQuantity) => {
     try {
@@ -47,9 +62,12 @@ const ViewCart = () => {
     try {
       setRemoving((prev) => ({ ...prev, [productId]: true }));
       const response = await axios.delete(`${api}/cart/remove`, {
-        data: { sessionId, productId },
+        params: { sessionId, productId },
       });
-      setCart(response.data);
+
+      // After deletion, refetch the updated cart
+      const updatedCart = await axios.get(`${api}/cart/${sessionId}`);
+      setCart(updatedCart.data);
     } catch (error) {
       console.error("Error removing from cart:", error);
     } finally {
@@ -129,8 +147,8 @@ const ViewCart = () => {
 
                 <div className="divide-y divide-gray-200">
                   {cart?.items?.map((item) => {
-                    const product = item?.productId;
-                    if (!product || !product._id) return null;
+                    const product = item?.productId; // holds the value of product
+                    if (!product) return null;
 
                     const discountedPrice =
                       product.discount > 0
@@ -211,7 +229,7 @@ const ViewCart = () => {
                             {/* Quantity Controls */}
                             <div className="flex items-center justify-between mt-4">
                               <div className="flex items-center gap-3">
-                                <span className="text-sm font-medium text-gray-700">
+                                <span className="text-sm font-medium text-black">
                                   Quantity:
                                 </span>
                                 <div className="flex items-center gap-2">
@@ -231,7 +249,7 @@ const ViewCart = () => {
                                     <FiMinus size={14} />
                                   </button>
 
-                                  <span className="text-lg font-medium w-12 text-center">
+                                  <span className="text-lg text-black font-medium w-12 text-center">
                                     {updating[product._id]
                                       ? "..."
                                       : item.quantity || 0}

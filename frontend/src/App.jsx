@@ -14,6 +14,8 @@ import Categories from "./pages/categories";
 import ManageMessages from "./pages/admin/manageMessages";
 import ViewCart from "./pages/viewCart";
 import Checkout from "./pages/checkout";
+import ViewOrders from "./pages/admin/viewOrders";
+import ViewOrderDetails from "./pages/admin/viewOrderDetails";
 const App = () => {
   return (
     <Routes>
@@ -25,6 +27,8 @@ const App = () => {
       <Route path="/admin/view-products" element={<ViewProducts />} />
       <Route path="/admin/manage-categories" element={<ManageCategories />} />
       <Route path="/admin/manage-messages" element={<ManageMessages />} />
+      <Route path="/admin/view-orders" element={<ViewOrders />} />
+      <Route path="/admin/view-orders/:id" element={<ViewOrderDetails />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/categories" element={<Categories />} />
