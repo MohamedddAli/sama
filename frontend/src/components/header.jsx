@@ -1,15 +1,7 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  FiShoppingCart,
-  FiMenu,
-  FiX,
-  FiPlus,
-  FiMinus,
-  FiTrash2,
-} from "react-icons/fi";
+import { FiShoppingCart, FiMenu, FiX, FiTrash2 } from "react-icons/fi";
 import axios from "axios";
 import { useCart } from "../context/cartContext"; // Adjust the import path as needed
 
@@ -17,6 +9,8 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const cartRef = useRef(null);
+  const api = import.meta.env.VITE_API_BASE_URL;
+  const { cart, setCart, sessionId } = useCart();
 
   const baseLink = "px-3 py-2 rounded-md font-medium text-gray-700 transition";
   const activeLink = "text-blue-700 font-semibold underline";
@@ -57,31 +51,23 @@ const Header = () => {
     };
   }, [isCartOpen]);
 
-  const api = import.meta.env.VITE_API_BASE_URL;
-  const { cart, setCart, sessionId } = useCart();
-
-  const updateCartItemQuantity = async (productId, newQuantity) => {
-    try {
-      if (newQuantity <= 0) {
-        await removeFromCart(productId);
-        return;
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get(`${api}/cart/${sessionId}`);
+        setCart(response.data);
+      } catch (error) {
+        console.error("Failed to fetch cart:", error);
       }
+    };
 
-      const response = await axios.patch(`${api}/cart/update`, {
-        sessionId,
-        productId,
-        quantity: newQuantity,
-      });
-      setCart(response.data);
-    } catch (error) {
-      console.error("Error updating cart:", error);
-    }
-  };
+    fetchCart();
+  }, []);
 
   const removeFromCart = async (productId) => {
     try {
       const response = await axios.delete(`${api}/cart/remove`, {
-        data: { sessionId, productId },
+        params: { sessionId, productId },
       });
       setCart(response.data);
     } catch (error) {
@@ -94,7 +80,6 @@ const Header = () => {
       cart?.items?.reduce((total, item) => {
         const product = item?.productId;
         if (!product || typeof product.price !== "number") return total;
-
         const price =
           product.discount > 0
             ? product.price - (product.price * product.discount) / 100
@@ -176,44 +161,55 @@ const Header = () => {
                 )}
               </button>
 
-              {/* Cart Dropdown */}
+              {/* Cart Dropdown - Redesigned */}
               {isCartOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
-                  <div className="p-4 border-b border-gray-200">
+                <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                  {/* Header */}
+                  <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Shopping Cart
-                      </h3>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          Shopping Cart
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {itemCount} {itemCount === 1 ? "item" : "items"}
+                        </p>
+                      </div>
                       <button
                         onClick={closeCart}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                        className="p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-200"
                       >
                         <FiX size={20} />
                       </button>
                     </div>
                   </div>
 
-                  <div className="max-h-64 overflow-y-auto">
+                  {/* Cart Items */}
+                  <div className="max-h-80 overflow-y-auto">
                     {!cart?.items || cart.items.length === 0 ? (
-                      <div className="p-6 text-center">
-                        <FiShoppingCart
-                          size={48}
-                          className="text-gray-300 mx-auto mb-4"
-                        />
-                        <p className="text-gray-500 mb-4">Your cart is empty</p>
+                      <div className="px-6 py-12 text-center">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <FiShoppingCart size={24} className="text-gray-400" />
+                        </div>
+                        <h4 className="text-lg font-medium text-gray-900 mb-2">
+                          Your cart is empty
+                        </h4>
+                        <p className="text-gray-500 mb-6">
+                          Add some products to get started
+                        </p>
                         <button
                           onClick={() => {
                             closeCart();
                             window.location.href = "/shop";
                           }}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
                         >
                           Start Shopping
                         </button>
                       </div>
                     ) : (
-                      <div className="p-4 space-y-4">
-                        {cart?.items?.map((item) => {
+                      <div className="py-2">
+                        {cart?.items?.map((item, index) => {
                           const product = item?.productId;
                           if (!product || !product._id) return null;
 
@@ -226,68 +222,69 @@ const Header = () => {
                           return (
                             <div
                               key={product._id}
-                              className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                              className={`px-6 py-4 hover:bg-gray-50 transition-colors ${
+                                index !== cart.items.length - 1
+                                  ? "border-b border-gray-100"
+                                  : ""
+                              }`}
                             >
-                              <img
-                                src={
-                                  product.images?.[0] ||
-                                  "/placeholder.svg?height=60&width=60"
-                                }
-                                alt={product.name || "Product"}
-                                className="w-12 h-12 object-cover rounded-md flex-shrink-0"
-                              />
-
-                              <div className="flex-1 min-w-0">
-                                <h4 className="text-sm font-medium text-gray-900 truncate">
-                                  {product.name || "Unknown Product"}
-                                </h4>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-sm font-semibold text-gray-900">
-                                    ${discountedPrice?.toFixed(2) || "0.00"}
-                                  </span>
-                                  {product.discount > 0 && (
-                                    <span className="text-xs text-gray-500 line-through">
-                                      ${product.price?.toFixed(2) || "0.00"}
-                                    </span>
-                                  )}
+                              <div className="flex items-start gap-4">
+                                {/* Product Image */}
+                                <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                  <img
+                                    src={
+                                      product.images?.[0] ||
+                                      "/placeholder.svg?height=64&width=64"
+                                    }
+                                    alt={product.name || "Product"}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.target.src =
+                                        "/placeholder.svg?height=64&width=64";
+                                    }}
+                                  />
                                 </div>
-                              </div>
 
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() =>
-                                    updateCartItemQuantity(
-                                      product._id,
-                                      (item.quantity || 1) - 1
-                                    )
-                                  }
-                                  className="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full transition-colors"
-                                >
-                                  <FiMinus size={12} />
-                                </button>
+                                {/* Product Details */}
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-medium text-gray-900 mb-1 line-clamp-2">
+                                    {product.name || "Unknown Product"}
+                                  </h4>
 
-                                <span className="text-sm font-medium w-8 text-center">
-                                  {item.quantity || 0}
-                                </span>
+                                  {/* Price */}
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <span className="font-semibold text-gray-900">
+                                      ${discountedPrice?.toFixed(2) || "0.00"}
+                                    </span>
+                                    {product.discount > 0 && (
+                                      <span className="text-sm text-gray-500 line-through">
+                                        ${product.price?.toFixed(2) || "0.00"}
+                                      </span>
+                                    )}
+                                  </div>
 
-                                <button
-                                  onClick={() =>
-                                    updateCartItemQuantity(
-                                      product._id,
-                                      (item.quantity || 0) + 1
-                                    )
-                                  }
-                                  className="w-6 h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full transition-colors"
-                                >
-                                  <FiPlus size={12} />
-                                </button>
+                                  {/* Quantity and Remove */}
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm text-gray-600">
+                                        Qty:
+                                      </span>
+                                      <span className="font-medium text-gray-900">
+                                        {item.quantity || 0}
+                                      </span>
+                                    </div>
 
-                                <button
-                                  onClick={() => removeFromCart(product._id)}
-                                  className="w-6 h-6 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-full transition-colors ml-2"
-                                >
-                                  <FiTrash2 size={12} />
-                                </button>
+                                    <button
+                                      onClick={() =>
+                                        removeFromCart(product._id)
+                                      }
+                                      className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                    >
+                                      <FiTrash2 size={14} />
+                                      Remove
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           );
@@ -296,26 +293,39 @@ const Header = () => {
                     )}
                   </div>
 
+                  {/* Footer */}
                   {cart?.items && cart.items.length > 0 && (
-                    <div className="p-4 border-t border-gray-200 bg-gray-50">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm font-medium text-gray-600">
+                    <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="font-medium text-gray-900">
                           Total:
                         </span>
-                        <span className="text-lg font-bold text-gray-900">
+                        <span className="text-xl font-bold text-gray-900">
                           ${calculateTotal().toFixed(2)}
                         </span>
                       </div>
 
-                      <button
-                        onClick={() => {
-                          closeCart();
-                          window.location.href = "/view-cart";
-                        }}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium transition-colors"
-                      >
-                        View Cart
-                      </button>
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => {
+                            closeCart();
+                            window.location.href = "/view-cart";
+                          }}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+                        >
+                          View Cart & Checkout
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            closeCart();
+                            window.location.href = "/shop";
+                          }}
+                          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors text-sm"
+                        >
+                          Continue Shopping
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>

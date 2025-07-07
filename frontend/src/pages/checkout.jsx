@@ -22,6 +22,7 @@ const Checkout = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
   const [error, setError] = useState("");
+  const [total, setTotal] = useState(0);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -36,13 +37,6 @@ const Checkout = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const api = import.meta.env.VITE_API_BASE_URL;
-
-  // Redirect if cart is empty
-  useEffect(() => {
-    if (!cart?.items || cart.items.length === 0) {
-      navigate("/shop");
-    }
-  }, [cart, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -152,15 +146,15 @@ const Checkout = () => {
                 (item.productId.price * item.productId.discount) / 100
               : item.productId.price,
         })),
-        totalAmount: calculateTotal(),
+        totalAmount: cart.totalPrice || calculateTotal().toFixed(2),
       };
-
+      setTotal(calculateTotal().toFixed(2));
       // Submit order
       const response = await axios.post(`${api}/order`, orderData);
 
       // Clear cart after successful order
+      await axios.post(`${api}/cart/clear`, { sessionId });
       setCart({ items: [] });
-
       // Set success state
       setOrderSuccess(true);
       setOrderNumber(response.data.orderNumber || response.data._id || "N/A");
@@ -181,7 +175,7 @@ const Checkout = () => {
   // Success page
   if (orderSuccess) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen min-w-screen bg-gray-50">
         <Header />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
@@ -211,9 +205,7 @@ const Checkout = () => {
                   <p className="text-sm font-medium text-gray-500">
                     Total Amount
                   </p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    ${calculateTotal().toFixed(2)}
-                  </p>
+                  <p className="text-lg font-semibold text-gray-900">{total}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">
@@ -236,8 +228,8 @@ const Checkout = () => {
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
               <p className="text-blue-800 text-sm">
-                📧 A confirmation email has been sent to{" "}
-                <strong>{formData.email}</strong> with your order details.
+                📧 Keep Your Order ID to be able to track your order through
+                customer service
               </p>
             </div>
 

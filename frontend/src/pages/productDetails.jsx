@@ -73,6 +73,7 @@ const ProductDetails = () => {
   const buyNow = async () => {
     try {
       await axios.post(`${api}/cart/add`, {
+        sessionId,
         productId: product._id,
         quantity: Number(quantity),
       });
